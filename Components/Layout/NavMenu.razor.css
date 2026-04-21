@@ -1,0 +1,95 @@
+.navbar-toggler {
+    appearance: none;
+    cursor: pointer;
+    width: 3.5rem;
+    height: 2.5rem;
+    color: white;
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    border: 1px solid rgba(255, 247, 240, 0.18);
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 244, 231, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 247, 240, 0.08);
+}
+
+.navbar-toggler:checked {
+    background-color: rgba(255, 247, 240, 0.22);
+}
+
+.top-row {
+    height: 3.5rem;
+    background: transparent;
+}
+
+.navbar-brand {
+    color: #fff3e8;
+    font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.nav-item {
+    font-size: 0.98rem;
+    padding-bottom: 0.5rem;
+}
+
+.nav-item:first-of-type {
+    padding-top: 1rem;
+}
+
+.nav-item:last-of-type {
+    padding-bottom: 1rem;
+}
+
+.nav-item ::deep .nav-link {
+    color: #f4deca;
+    background: rgba(255, 247, 240, 0.04);
+    border: 1px solid transparent;
+    border-radius: 16px;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-item ::deep a.active {
+    background: rgba(255, 247, 240, 0.16);
+    border-color: rgba(255, 228, 200, 0.28);
+    color: #fffaf4;
+    transform: translateX(4px);
+}
+
+.nav-item ::deep .nav-link:hover {
+    background: rgba(255, 247, 240, 0.11);
+    border-color: rgba(255, 228, 200, 0.2);
+    color: #fffaf4;
+}
+
+.nav-scrollable {
+    display: none;
+}
+
+.navbar-toggler:checked ~ .nav-scrollable {
+    display: block;
+}
+
+@media (min-width: 641px) {
+    .navbar-toggler {
+        display: none;
+    }
+
+    .nav-scrollable {
+        display: block;
+        height: calc(100vh - 3.5rem);
+        overflow-y: auto;
+        padding-bottom: 1rem;
+    }
+}
+
+.nav-label {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}

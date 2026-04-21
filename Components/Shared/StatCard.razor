@@ -1,0 +1,19 @@
+<article class="stat-card @AccentClass">
+    <p class="stat-label">@Title</p>
+    <div class="stat-value">@Value</div>
+    <p class="stat-description">@Description</p>
+</article>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string Value { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string Description { get; set; } = string.Empty;
+
+    [Parameter]
+    public string AccentClass { get; set; } = "sand";
+}

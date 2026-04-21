@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<ItemGroup>
+		<None Include="wwwroot\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPublishable>false</IsPublishable>
+    <DefaultItemExcludes>$(DefaultItemExcludes);lab8.Tests\**;build-verify\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="bin\Debug\net7.0\Blazor Lab Starter Code.deps.json" />
+    <Content Include="bin\Debug\net7.0\Blazor Lab Starter Code.runtimeconfig.json" />
+    <Content Include="bin\Debug\net8.0\appsettings.Development.json" />
+    <Content Include="bin\Debug\net8.0\appsettings.json" />
+    <Content Include="bin\Debug\net8.0\Blazor Lab Starter Code.deps.json" />
+    <Content Include="bin\Debug\net8.0\Blazor Lab Starter Code.runtimeconfig.json" />
+    <Content Include="bin\Debug\net8.0\Blazor_Lab_Starter_Code.deps.json" />
+    <Content Include="bin\Debug\net8.0\Blazor_Lab_Starter_Code.runtimeconfig.json" />
+    <Content Include="bin\Debug\net8.0\Blazor_Lab_Starter_Code.staticwebassets.endpoints.json" />
+    <Content Include="bin\Debug\net8.0\Blazor_Lab_Starter_Code.staticwebassets.runtime.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net7.0\Blazor Lab Starter Code.dll" />
+    <None Include="bin\Debug\net7.0\Blazor Lab Starter Code.exe" />
+    <None Include="bin\Debug\net7.0\Blazor Lab Starter Code.pdb" />
+    <None Include="bin\Debug\net7.0\Data\Books.csv" />
+    <None Include="bin\Debug\net7.0\Data\Users.csv" />
+    <None Include="bin\Debug\net8.0\Blazor Lab Starter Code.dll" />
+    <None Include="bin\Debug\net8.0\Blazor Lab Starter Code.exe" />
+    <None Include="bin\Debug\net8.0\Blazor Lab Starter Code.pdb" />
+    <None Include="bin\Debug\net8.0\Blazor_Lab_Starter_Code.dll" />
+    <None Include="bin\Debug\net8.0\Blazor_Lab_Starter_Code.exe" />
+    <None Include="bin\Debug\net8.0\Blazor_Lab_Starter_Code.pdb" />
+    <None Include="bin\Debug\net8.0\Data\Books.csv" />
+    <None Include="bin\Debug\net8.0\Data\Users.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="bin\Release\net8.0\" />
+  </ItemGroup>
+
+</Project>
+
+
+

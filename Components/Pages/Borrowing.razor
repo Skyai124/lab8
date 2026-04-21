@@ -1,0 +1,155 @@
+﻿@page "/borrowing"
+@rendermode InteractiveServer
+@inject ILibraryService Library
+
+<PageTitle>Borrow and Return</PageTitle>
+
+<section class="page-header">
+    <p class="eyebrow">Borrowing</p>
+    <h1>Borrow and return books</h1>
+    <p class="page-subtitle">This page replaces the console prompts for checking books out and returning them to the library.</p>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(statusMessage))
+{
+    <div class="status-banner @(lastActionSucceeded ? "success" : "error")">@statusMessage</div>
+}
+
+<div class="split-grid">
+    <section class="panel">
+        <div class="section-heading">
+            <p class="eyebrow">Borrow Book</p>
+            <h2>Create a checkout</h2>
+        </div>
+
+        <EditForm Model="borrowRequest" OnValidSubmit="BorrowBook" class="form-stack">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div>
+                <label class="form-label" for="borrow-book">Available book</label>
+                <InputSelect id="borrow-book" class="form-select" @bind-Value="borrowRequest.BookId">
+                    <option value="0">Choose a book</option>
+                    @foreach (var book in AvailableBooks)
+                    {
+                        <option value="@book.Id">@book.Title by @book.Author</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => borrowRequest.BookId)" />
+            </div>
+
+            <div>
+                <label class="form-label" for="borrow-user">Borrowing user</label>
+                <InputSelect id="borrow-user" class="form-select" @bind-Value="borrowRequest.UserId">
+                    <option value="0">Choose a user</option>
+                    @foreach (var user in Users)
+                    {
+                        <option value="@user.Id">@user.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => borrowRequest.UserId)" />
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Borrow Book</button>
+            </div>
+        </EditForm>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <p class="eyebrow">Loan Summary</p>
+            <h2>Current borrowed books</h2>
+            <p class="muted-note">@BorrowedBooks.Count item(s) currently checked out.</p>
+        </div>
+
+        @if (BorrowedBooks.Count == 0)
+        {
+            <p class="empty-state">No books are checked out right now.</p>
+        }
+        else
+        {
+            <div class="table-shell">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Book</th>
+                            <th>User</th>
+                            <th>ISBN</th>
+                            <th>Return</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var entry in BorrowedBooks)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="stacked-text">
+                                        <strong>@entry.Title</strong>
+                                        <span>@entry.Author</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="stacked-text">
+                                        <strong>@entry.UserName</strong>
+                                        <span>@entry.UserEmail</span>
+                                    </div>
+                                </td>
+                                <td>@entry.ISBN</td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="() => ReturnBook(entry.UserId, entry.BookId)">
+                                        Return
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>
+
+@code {
+    private readonly BorrowRequest borrowRequest = new();
+    private bool lastActionSucceeded = true;
+    private string? statusMessage;
+
+    private IReadOnlyList<Book> AvailableBooks => Library.GetBooks();
+    private IReadOnlyList<User> Users => Library.GetUsers();
+    private IReadOnlyList<BorrowedBookRecord> BorrowedBooks => Library.GetBorrowedBooks();
+
+    private void BorrowBook()
+    {
+        var result = Library.BorrowBook(borrowRequest.BookId, borrowRequest.UserId);
+        SetStatus(result);
+
+        if (result.Succeeded)
+        {
+            borrowRequest.BookId = 0;
+            borrowRequest.UserId = 0;
+        }
+    }
+
+    private void ReturnBook(int userId, int bookId)
+    {
+        var result = Library.ReturnBook(userId, bookId);
+        SetStatus(result);
+    }
+
+    private void SetStatus(OperationResult result)
+    {
+        lastActionSucceeded = result.Succeeded;
+        statusMessage = result.Message;
+    }
+
+    private sealed class BorrowRequest
+    {
+        [System.ComponentModel.DataAnnotations.Range(1, int.MaxValue, ErrorMessage = "Choose a book to borrow.")]
+        public int BookId { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Range(1, int.MaxValue, ErrorMessage = "Choose the user who is borrowing the book.")]
+        public int UserId { get; set; }
+    }
+}
+

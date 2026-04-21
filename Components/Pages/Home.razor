@@ -1,0 +1,54 @@
+@page "/"
+@inject ILibraryService Library
+
+
+<PageTitle>Library Dashboard</PageTitle>
+
+@{
+    var stats = Library.GetStats();
+}
+
+<section class="hero-panel">
+    <div class="hero-copy">
+        <p class="eyebrow">Lab 5 Web Application</p>
+        <h1>Library dashboard</h1>
+        <p class="hero-text">
+            This Blazor app recreates the starter console system with pages for books, users, borrowing,
+            returns, and a written analysis of the original program flow.
+        </p>
+    </div>
+    <div class="hero-actions">
+        <a class="btn btn-primary hero-button" href="books">Manage books</a>
+        <a class="btn btn-secondary hero-button secondary-action" href="borrowing">Borrow and return</a>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <StatCard Title="Available Books" Value="@($"{stats.AvailableBooks}")" Description="Books currently ready to borrow." AccentClass="sand" />
+    <StatCard Title="Registered Users" Value="@($"{stats.TotalUsers}")" Description="People loaded from the starter CSV file." AccentClass="ink" />
+    <StatCard Title="Borrowed Books" Value="@($"{stats.BorrowedBooks}")" Description="Books currently checked out to users." AccentClass="copper" />
+</section>
+
+<section class="panel feature-panel">
+    <div class="section-heading">
+        <p class="eyebrow">Core Features</p>
+    </div>
+    <div class="feature-grid">
+        <article class="feature-card">
+            <h3>Book management</h3>
+            <p>Add, edit, delete, and review the library inventory from one page.</p>
+        </article>
+        <article class="feature-card">
+            <h3>User management</h3>
+            <p>Create and maintain patrons with the same fields the console app used</p>
+        </article>
+        <article class="feature-card">
+            <h3>Borrow and return</h3>
+            <p>Assign books to users, view current loans on books, and return copies back to library.</p>
+        </article>
+        <article class="feature-card">
+            <h3>Starter analysis</h3>
+            <p>Documents on how the original lists, dictionary, methods, and console input map.</p>
+        </article>
+    </div>
+</section>

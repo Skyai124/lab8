@@ -1,0 +1,88 @@
+@page "/analysis"
+
+<PageTitle>Starter Code Analysis</PageTitle>
+
+<section class="page-header">
+    <p class="eyebrow">Part 1</p>
+    <h1>Starter code analysis</h1>
+    <p class="page-subtitle">This page documents how the original console program works and what the Blazor app needed to recreate.</p>
+</section>
+
+<section class="panel">
+    <div class="section-heading">
+        <p class="eyebrow">Code Structure</p>
+        <h2>Main data structures in <code>Program.cs</code></h2>
+    </div>
+    <div class="analysis-grid">
+        <article class="analysis-card">
+            <h3><code>books</code></h3>
+            <p>The starter console app stores available library inventory in a <code>List&lt;Book&gt;</code>. Borrowing removes a book from this list and returning adds it back.</p>
+        </article>
+        <article class="analysis-card">
+            <h3><code>users</code></h3>
+            <p>Users are stored in a <code>List&lt;User&gt;</code> and are referenced whenever the program adds, edits, deletes, or selects a borrower.</p>
+        </article>
+        <article class="analysis-card">
+            <h3><code>borrowedBooks</code></h3>
+            <p>The console program tracks active loans in a <code>Dictionary&lt;User, List&lt;Book&gt;&gt;</code>, which connects each user to the books they currently hold.</p>
+        </article>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="section-heading">
+        <p class="eyebrow">Methods to Study</p>
+        <h2>What each original method was responsible for</h2>
+    </div>
+    <div class="analysis-grid">
+        <article class="analysis-card">
+            <h3><code>ReadBooks()</code> and <code>ReadUsers()</code></h3>
+            <p>These methods read starter records from the CSV files in the <code>Data</code> folder and populate the lists used by the rest of the program.</p>
+        </article>
+        <article class="analysis-card">
+            <h3><code>ManageBooks()</code> and <code>ManageUsers()</code></h3>
+            <p>Each method opens a looped submenu that lets the user add, edit, delete, and list records through console prompts.</p>
+        </article>
+        <article class="analysis-card">
+            <h3><code>BorrowBook()</code> and <code>ReturnBook()</code></h3>
+            <p>These methods move books between available inventory and the borrowed dictionary while validating the selected book and user.</p>
+        </article>
+        <article class="analysis-card">
+            <h3>Console input and output</h3>
+            <p>The console version depends on <code>Console.WriteLine</code> menus and <code>Console.ReadLine</code> prompts; the web app replaces those with navigation, forms, tables, and buttons.</p>
+        </article>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="section-heading">
+        <p class="eyebrow">Core Functionalities</p>
+        <h2>Features the Blazor app replicates</h2>
+    </div>
+    <div class="analysis-grid">
+        <article class="analysis-card">
+            <h3>Data loading</h3>
+            <p>The web app reads the same starter CSV files on startup so the existing book and user data appears immediately.</p>
+        </article>
+        <article class="analysis-card">
+            <h3>Book CRUD</h3>
+            <p>Users can add, edit, delete, and list books without leaving the browser.</p>
+        </article>
+        <article class="analysis-card">
+            <h3>User CRUD</h3>
+            <p>Users can add, edit, delete, and list patrons with validation for required fields and email formatting.</p>
+        </article>
+        <article class="analysis-card">
+            <h3>Borrowing workflow</h3>
+            <p>The app lets a user borrow an available book, removes it from inventory, and shows it in the loan list.</p>
+        </article>
+        <article class="analysis-card">
+            <h3>Return workflow</h3>
+            <p>Returned books are added back to the available list and removed from the borrowed record.</p>
+        </article>
+        <article class="analysis-card">
+            <h3>Clear UI feedback</h3>
+            <p>Result banners now replace console messages so the user gets immediate feedback after each action.</p>
+        </article>
+    </div>
+</section>

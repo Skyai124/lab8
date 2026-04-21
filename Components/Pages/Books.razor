@@ -1,0 +1,165 @@
+﻿@page "/books"
+@rendermode InteractiveServer
+@inject ILibraryService Library
+
+<PageTitle>Manage Books</PageTitle>
+
+<section class="page-header">
+    <p class="eyebrow">Books</p>
+    <h1>Manage library books</h1>
+    <p class="page-subtitle">Add, update, delete, and review the available inventory from the starter CSV data.</p>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(statusMessage))
+{
+    <div class="status-banner @(lastActionSucceeded ? "success" : "error")">@statusMessage</div>
+}
+
+<div class="workspace-grid">
+    <section class="panel">
+        <div class="section-heading">
+            <p class="eyebrow">Book Form</p>
+            <h2>@(isEditing ? "Edit book" : "Add a new book")</h2>
+        </div>
+
+        <EditForm Model="bookForm" OnValidSubmit="SaveBook" class="form-stack">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div>
+                <label class="form-label" for="book-title">Title</label>
+                <InputText id="book-title" class="form-control" @bind-Value="bookForm.Title" />
+                <ValidationMessage For="@(() => bookForm.Title)" />
+            </div>
+
+            <div>
+                <label class="form-label" for="book-author">Author</label>
+                <InputText id="book-author" class="form-control" @bind-Value="bookForm.Author" />
+                <ValidationMessage For="@(() => bookForm.Author)" />
+            </div>
+
+            <div>
+                <label class="form-label" for="book-isbn">ISBN</label>
+                <InputText id="book-isbn" class="form-control" @bind-Value="bookForm.ISBN" />
+                <ValidationMessage For="@(() => bookForm.ISBN)" />
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">@(isEditing ? "Save Changes" : "Add Book")</button>
+                @if (isEditing)
+                {
+                    <button type="button" class="btn btn-secondary" @onclick="ResetForm">Cancel</button>
+                }
+            </div>
+        </EditForm>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <p class="eyebrow">Available Inventory</p>
+            <h2>Current books</h2>
+            <p class="muted-note">@AvailableBookList.Count book(s) available for checkout.</p>
+        </div>
+
+        @if (AvailableBookList.Count == 0)
+        {
+            <p class="empty-state">No books are currently available.</p>
+        }
+        else
+        {
+            <div class="table-shell">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Book</th>
+                            <th>ISBN</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var book in AvailableBookList)
+                        {
+                            <tr>
+                                <td>@book.Id</td>
+                                <td>
+                                    <div class="stacked-text">
+                                        <strong>@book.Title</strong>
+                                        <span>@book.Author</span>
+                                    </div>
+                                </td>
+                                <td>@book.ISBN</td>
+                                <td>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" @onclick="() => StartEdit(book)">Edit</button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => DeleteBook(book.Id)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>
+
+@code {
+    private Book bookForm = CreateBlankBook();
+    private bool isEditing;
+    private bool lastActionSucceeded = true;
+    private string? statusMessage;
+
+    private IReadOnlyList<Book> AvailableBookList => Library.GetBooks();
+
+    private void SaveBook()
+    {
+        var result = isEditing ? Library.UpdateBook(bookForm) : Library.AddBook(bookForm);
+        SetStatus(result);
+
+        if (result.Succeeded)
+        {
+            ResetForm();
+        }
+    }
+
+    private void StartEdit(Book book)
+    {
+        isEditing = true;
+        bookForm = new Book
+        {
+            Id = book.Id,
+            Title = book.Title,
+            Author = book.Author,
+            ISBN = book.ISBN
+        };
+
+        statusMessage = null;
+    }
+
+    private void DeleteBook(int bookId)
+    {
+        var result = Library.DeleteBook(bookId);
+        SetStatus(result);
+
+        if (isEditing && bookForm.Id == bookId)
+        {
+            ResetForm();
+        }
+    }
+
+    private void ResetForm()
+    {
+        isEditing = false;
+        bookForm = CreateBlankBook();
+    }
+
+    private void SetStatus(OperationResult result)
+    {
+        lastActionSucceeded = result.Succeeded;
+        statusMessage = result.Message;
+    }
+
+    private static Book CreateBlankBook() => new();
+}
+

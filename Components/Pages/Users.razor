@@ -1,0 +1,153 @@
+﻿@page "/users"
+@rendermode InteractiveServer
+@inject ILibraryService Library
+
+<PageTitle>Manage Users</PageTitle>
+
+<section class="page-header">
+    <p class="eyebrow">Users</p>
+    <h1>Manage library users</h1>
+    <p class="page-subtitle">Create and maintain the patrons who can borrow books from the system.</p>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(statusMessage))
+{
+    <div class="status-banner @(lastActionSucceeded ? "success" : "error")">@statusMessage</div>
+}
+
+<div class="workspace-grid">
+    <section class="panel">
+        <div class="section-heading">
+            <p class="eyebrow">User Form</p>
+            <h2>@(isEditing ? "Edit user" : "Add a new user")</h2>
+        </div>
+
+        <EditForm Model="userForm" OnValidSubmit="SaveUser" class="form-stack">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div>
+                <label class="form-label" for="user-name">Name</label>
+                <InputText id="user-name" class="form-control" @bind-Value="userForm.Name" />
+                <ValidationMessage For="@(() => userForm.Name)" />
+            </div>
+
+            <div>
+                <label class="form-label" for="user-email">Email</label>
+                <InputText id="user-email" class="form-control" @bind-Value="userForm.Email" />
+                <ValidationMessage For="@(() => userForm.Email)" />
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">@(isEditing ? "Save Changes" : "Add User")</button>
+                @if (isEditing)
+                {
+                    <button type="button" class="btn btn-secondary" @onclick="ResetForm">Cancel</button>
+                }
+            </div>
+        </EditForm>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <p class="eyebrow">Registered Users</p>
+            <h2>Current patrons</h2>
+            <p class="muted-note">@UserList.Count user(s) loaded into the system.</p>
+        </div>
+
+        @if (UserList.Count == 0)
+        {
+            <p class="empty-state">No users are currently registered.</p>
+        }
+        else
+        {
+            <div class="table-shell">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in UserList)
+                        {
+                            <tr>
+                                <td>@user.Id</td>
+                                <td>@user.Name</td>
+                                <td>@user.Email</td>
+                                <td>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" @onclick="() => StartEdit(user)">Edit</button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => DeleteUser(user.Id)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>
+
+@code {
+    private User userForm = CreateBlankUser();
+    private bool isEditing;
+    private bool lastActionSucceeded = true;
+    private string? statusMessage;
+
+    private IReadOnlyList<User> UserList => Library.GetUsers();
+
+    private void SaveUser()
+    {
+        var result = isEditing ? Library.UpdateUser(userForm) : Library.AddUser(userForm);
+        SetStatus(result);
+
+        if (result.Succeeded)
+        {
+            ResetForm();
+        }
+    }
+
+    private void StartEdit(User user)
+    {
+        isEditing = true;
+        userForm = new User
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email
+        };
+
+        statusMessage = null;
+    }
+
+    private void DeleteUser(int userId)
+    {
+        var result = Library.DeleteUser(userId);
+        SetStatus(result);
+
+        if (isEditing && userForm.Id == userId)
+        {
+            ResetForm();
+        }
+    }
+
+    private void ResetForm()
+    {
+        isEditing = false;
+        userForm = CreateBlankUser();
+    }
+
+    private void SetStatus(OperationResult result)
+    {
+        lastActionSucceeded = result.Succeeded;
+        statusMessage = result.Message;
+    }
+
+    private static User CreateBlankUser() => new();
+}
+
