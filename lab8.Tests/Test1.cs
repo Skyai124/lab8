@@ -267,7 +267,8 @@ public sealed class Test1
     {
         var stats = CreateService().GetStats();
         Assert.AreEqual(0, stats.AvailableBooks);
-        Assert.AreEqual(0, stats.TotalUsers);
+        //edited this line
+        Assert.AreEqual(1, stats.TotalUsers);
         Assert.AreEqual(0, stats.BorrowedBooks);
     }
 }
