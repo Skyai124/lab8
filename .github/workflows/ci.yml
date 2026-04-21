@@ -2,9 +2,9 @@
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -28,3 +28,4 @@ jobs:
 
       - name: Run MSTest suite
         run: dotnet test lab8.Tests/lab8.Tests.csproj --configuration Release --no-build --logger trx
+
